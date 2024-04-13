@@ -8,7 +8,9 @@ import earnPage from "./game"
 
 import { itemsArray } from "./menu"
 
-let userGold = 2100
+let userGold = {
+	gold: 1200
+}
 
 function mainPage (animationCondition, buyCondition, target, priceCount, index) {
 	let currentPage = 'title'
@@ -174,10 +176,10 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 		})
 		cartButton.classList.add('cartButton')
 		goldCountText.classList.add('goldCountText')
-		goldCountText.textContent = `${userGold}`
+		goldCountText.textContent = `${userGold.gold}`
 		goldCountContainer.classList.add('slide-in-right')
 		goldCountTextAnimation.classList.add('goldCountTextAnimation')
-		goldCountTextAnimation.textContent = `${userGold}`
+		goldCountTextAnimation.textContent = `${userGold.gold}`
 		goldCountTextAnimation.classList.add('slide-in-right')
 
 		secretShop.addEventListener('click', event => {

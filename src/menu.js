@@ -24,6 +24,7 @@ import plus from './images/plus.svg'
 import mainPage from "./mainpage"
 import boughtSymbolImg from './images/boughtSymbol.svg'
 import { userGold } from "./mainpage"
+import ballSound from './sounds/ballsound.mp3'
 import earnPage from "./game"
 
 
@@ -35,7 +36,8 @@ const audioContainer = {
 	midas: new Audio(midasSound),
 	refresher: new Audio(refresherSound),
 	soulring: new Audio(soulRingSound),
-	travelboots: new Audio(travelbootsSound)
+	travelboots: new Audio(travelbootsSound),
+	//ballsound: new Audio(ballSound)
 }
 
 let itemsArray = [
@@ -504,7 +506,7 @@ function menuPage() {
 		})
 		cartButton.classList.add('cartButton')
 		goldCountText.classList.add('goldCountText')
-		goldCountText.textContent = `${userGold}`
+		goldCountText.textContent = `${userGold.gold}`
 		goldCountContainer.classList.add('slide-in-right')
 
 		handLeft.src = `${handLeftImported}`
@@ -568,6 +570,7 @@ function menuPage() {
 	append()
 }
 
+export { audioContainer }
 export { itemsArray }
 export default menuPage;
 
