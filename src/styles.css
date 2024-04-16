@@ -998,7 +998,7 @@
 	visibility: hidden;
 }
 
-.gameButton1, .gameButton2, .gameButton3, .gameButton4, .gameButton5, .startGameButton {
+.gameButton1, .gameButton2, .gameButton3, .gameButton4, .gameButton5, .startGameButton, .gameButton6Circle {
 	border-radius: 20px;
 	border: 3px solid rgb(119, 119, 119);
 	background-color: rgba(0, 0, 0, 0.3);
@@ -1062,6 +1062,43 @@
 	box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 	justify-content: center;
 	align-items: center;
+	/*background-color: rgb(21, 82, 21);*/
+	position: relative;
+	z-index: 1;
+}
+
+.gameTimeText {
+	position: absolute;
+	z-index: 2;
+}
+
+.gameTimeHealth {
+	position: absolute;
+	/*top: 0px;
+	right: 0px;*/
+	width: 100%;
+	height: 100%;
+	border-radius: 15px;
+	z-index: 0;
+	border: 2px solid  rgb(119, 119, 119);
+	display: grid;
+	grid-template-columns: repeat(20, auto);
+}
+
+.healtBarItem {
+	width: 100%;
+	height: 100%;
+	background-color: rgb(21, 82, 21);
+}
+
+.healtBarItem0 {
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+}
+
+.healtBarItem19 {
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
 }
 
 .gameButtonsContainer {
@@ -1145,13 +1182,11 @@
 }
 
 .gameCircle {
-	width: 60px;
-	height: 60px;
 	border-radius: 50%;
 	border: 1px solid rgb(119, 119, 119);
 	background-color: rgb(107, 24, 24);
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 }
 
 .firstTextArea {
@@ -1205,6 +1240,68 @@
 	color: rgb(119, 119, 119);
 	text-shadow: 1px 3px 1px #474747;
 }
+
+.missText {
+	font-size: 25px;
+	color: white;
+	text-shadow: 1px 3px 1px #474747;
+	position: absolute;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.gameButton6Circle {
+	transition: 0s;
+}
+.gameButton6Circle:active {
+	background-color: rgba(255, 255, 255, 0.3);
+	color: white;
+	transform: scale(70%);
+	transition: 0s;
+}
+
+.inputContainer {
+	width: 150px;
+	height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.slider {
+	width: 100%;
+	-webkit-appearance: none;
+	background-color: inherit;
+	color: white;
+	border-radius: 15px;
+	outline: none;
+	opacity: 0.7;
+	-webkit-transition: .2s;
+	transition: opacity .2s;
+	appearance: none;
+}
+
+.slider:hover {
+	opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none; 
+	appearance: none;
+	width: 25px; 
+	background: white;
+	border-radius: 50%;
+	height: 25px; 
+	cursor: pointer; 
+}
+
+.sizeChangeDiv {
+	border-radius: 50%;
+	border: 1px solid rgb(119, 119, 119);
+	background-color: rgb(107, 24, 24);
+}
+
+
 
 
 .slide-in-bck-center {

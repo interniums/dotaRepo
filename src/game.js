@@ -5,6 +5,7 @@ import plus from './images/plus.svg'
 import { userGold } from "./mainpage"
 import mainPage from "./mainpage"
 import ballSound from './sounds/ballsound.mp3'
+import missSound from './sounds/missSound.mp3'
 
 function earnPage() {
 	const content = document.getElementById('content')
@@ -13,6 +14,7 @@ function earnPage() {
 	const goldCountContainer = document.createElement('div')
 	const goldCountImage = document.createElement('img')
 	const goldPlusButton = document.createElement('img')
+	const sizeChangeText = document.createElement('p')
 	const cartButton = document.createElement('img')
 	const goldCountText = document.createElement('p')
 	const dialogArea = document.createElement('div')
@@ -28,24 +30,31 @@ function earnPage() {
 	const disclaimerText2 = document.createElement('p')
 	const disclaimerText3 = document.createElement('p')
 	const disclaimerButton = document.createElement('button')
+	const slider = document.createElement('input')
 	const gameScoreText = document.createElement('p')
-	const gameTimeText = document.createElement('p')
+	const gameTimeText = document.createElement('div')
 	const startGameButton = document.createElement('button')
+	const inputContainer = document.createElement('div')
 	const gameButton1 = document.createElement('button')
 		const gameButton2 = document.createElement('button')
 		const gameButton3 = document.createElement('button')
 		const gameButton4 = document.createElement('button')
 		const gameButton5 = document.createElement('button')
+		const gameButton6Circle = document.createElement('button')
 		const gameStartCountText = document.createElement('p')
+		const gameTimeContainer = document.createElement('div')
+		const gameTimeHealth = document.createElement('div')
+		const sizeChangeDiv = document.createElement('div')
 	let gamePosition = 'start'
 		let interval
 		let score = 0
-		let missedCircles = 0
+		let missedCircles = 0 
 	let gameStart = false
 	let position = 0
 	let eventListener = 0
 	let speed = '1'
 	let intervalSpeed
+	let size = 50
 	let timeout1
 	let timeout2
 	let timeout3
@@ -57,6 +66,8 @@ function earnPage() {
 	let timeout
 	let showTimeout
 	let arg = false
+	let buttonCalled = false
+	let score2
 
 
 	content.appendChild(disclaimer)
@@ -65,6 +76,35 @@ function earnPage() {
 	disclaimerTextContainer.appendChild(disclaimerText2)
 	disclaimerTextContainer.appendChild(disclaimerText3)
 	disclaimer.appendChild(disclaimerButton)
+
+	function boardListener(event) {
+		const targetElement = event.target
+		if (targetElement.classList.contains('gameCircle')) {
+		} else {
+			const missSound1 = new Audio(missSound) 
+			missSound1.volume = 0.5
+			missSound1.play()
+			const missText = document.createElement('p')
+			missText.classList.add('missText')
+			missText.textContent = 'miss'
+    	const mouseX = event.clientX
+    	const mouseY = event.clientY
+
+			missText.style.top = `${mouseY}px`
+			missText.style.left = `${mouseX - 13}px`
+			content.appendChild(missText)
+			missText.classList.add('fade-out')
+			setTimeout(() => {
+				missText.classList.remove('fade-out')
+				content.removeChild(missText)
+			}, 1001)
+			console.log('missed')
+			if (missedCircles >= -19) {
+				missedCircles --
+			} 
+			showScore()
+		}
+	}
 
 	function doomWork() {
 		playButton.classList.add('fade-in')
@@ -77,6 +117,20 @@ function earnPage() {
 				disclaimer.classList.remove('slide-in-top')
 				disclaimer.classList.add('slide-out-top')		
 				gameStart = true
+				gamePosition = 'start'
+				const item = document.querySelectorAll(`.healtBarItem`)
+				item.forEach(element => element.style.backgroundColor = 'rgb(21, 82, 21)')
+				setTimeout(() => {
+
+					while (disclaimer.firstChild) {
+						disclaimer.removeChild(disclaimer.firstChild)
+					}
+					disclaimer.appendChild(disclaimerTextContainer)
+					disclaimerTextContainer.appendChild(disclaimerText1)
+					disclaimerTextContainer.appendChild(disclaimerText2)
+					disclaimerTextContainer.appendChild(disclaimerText3)
+					disclaimer.appendChild(disclaimerButton)
+				}, 350);
 			}
 		})
 
@@ -107,13 +161,24 @@ function earnPage() {
 					playButton.style.right = '-4%'
 					showGame('show')
 				} else if (position == 1) {
+					const item = document.querySelectorAll(`.healtBarItem`)
+					item.forEach(element => element.style.backgroundColor = 'rgb(21, 82, 21)')
+					buttonCalled = false
+					gameContainerWhereCircles.removeEventListener('click', boardListener)
+					setTimeout(() => {
+						gameContainerWhereCircles.removeEventListener('click', boardListener)
+					}, 3601);
+					arg = true
 					clearTimeout(startGameTimeout)
 					clearTimeout(timeout1)
 					clearTimeout(timeout2)
 					clearTimeout(timeout3)
 					clearTimeout(timeout4)
 					clearTimeout(timeout5)
-					clearInterval(interval)
+					score = 0
+					missedCircles = 0
+					clearTimeout(showTimeout)
+					showScore()
 					playButton.textContent = 'play'
 					position = 0
 					dialogArea.classList.remove('slide-out-bottom')
@@ -128,7 +193,6 @@ function earnPage() {
 					disclaimer.classList.add('slide-out-top')
 					clearInterval(interval)
 					gameContainerWhereCircles.innerHTML = ''
-					gamePosition = 'start'
 
 					setTimeout(() => {
 						while (disclaimerTextContainer.firstChild) {
@@ -173,10 +237,19 @@ function earnPage() {
 		dialogArea.textContent = 'here u can earn some gold, just play!'
 	}
 
+	function showScore() {
+		gameTimeText.textContent = `${missedCircles + 20}`
+		gameScoreText.textContent = `${score}`
+		score2  = missedCircles + 20
+		if (score2 < 20) {
+			const item = document.querySelectorAll(`.healtBarItem${score2}`)
+			item.forEach(item1 => item1.style.backgroundColor = 'inherit')
+		}
+	}
+
 	function createGame() {
 		const gameInformationContainer = document.createElement('div')
 		const gameScoreContainer = document.createElement('div')
-		const gameTimeContainer = document.createElement('div')
 		const gameButtonsContainer = document.createElement('div')
 		const gameDescription = document.createElement('div')
 		const gameDescriptionText = document.createElement('p')
@@ -191,6 +264,7 @@ function earnPage() {
 		gameInformationTimeName.textContent = 'lives:'
 		gameScoreContainer.classList.add('gameScoreContainer')
 		gameScoreText.classList.add('gameScoreText')
+		gameTimeHealth.classList.add('gameTimeHealth')
 		gameScoreText.textContent = '0'
 		startGameButton.classList.add('startGameButton')
 		startGameButton.textContent = 'start game'
@@ -199,6 +273,9 @@ function earnPage() {
 		gameContainer.classList.add('gameContainer')
 		gameContainerWhereCircles.classList.add('gameContainerWhereCircles')
 		gameButtonsContainer.classList.add('gameButtonsContainer')
+		gameButton6Circle.classList.add('gameButton6Circle')
+		gameButton6Circle.textContent = 'size'
+		gameButton6Circle.addEventListener('click', showCircleSize)
 		gameButton1.classList.add('gameButton1')
 		gameButton1.classList.add('clicked')
 		gameButton1.classList.add('gameButton')
@@ -227,14 +304,63 @@ function earnPage() {
 			gameInformationContainer.appendChild(gameInformationTimeName)
 			gameInformationContainer.appendChild(gameTimeContainer)
 			gameTimeContainer.appendChild(gameTimeText)
+			gameTimeContainer.appendChild(gameTimeHealth)
 			gameMainContainer.appendChild(gameContainer)
 			gameContainer.appendChild(gameContainerWhereCircles)
 			gameMainContainer.appendChild(gameButtonsContainer)
+			gameButtonsContainer.appendChild(gameButton6Circle)
 			gameButtonsContainer.appendChild(gameButton1)
 			gameButtonsContainer.appendChild(gameButton2)
 			gameButtonsContainer.appendChild(gameButton3)
 			gameButtonsContainer.appendChild(gameButton4)
 			gameButtonsContainer.appendChild(gameButton5)
+
+
+		function createHealthBar() {
+			for (let i = 0; i < 20; i++) {
+				const healtBarItem = document.createElement('div')
+				healtBarItem.classList.add(`healtBarItem`)
+				healtBarItem.classList.add(`healtBarItem${i}`)
+				gameTimeHealth.appendChild(healtBarItem)
+			}
+		}
+
+		function showCircleSize() {
+			if (gamePosition == 'start') {
+				inputContainer.classList.add('inputContainer')
+				slider.type = 'range'
+				slider.setAttribute('value', 50)
+				slider.min = 10
+				slider.max = 150
+				slider.classList.add('slider')
+				sizeChangeDiv.classList.add('sizeChangeDiv')
+				sizeChangeDiv.style.height = '50px'
+				sizeChangeDiv.style.width = '50px'
+
+				while (disclaimer.firstChild) {
+					disclaimer.removeChild(disclaimer.firstChild)
+				}
+				disclaimer.appendChild(sizeChangeText)
+				disclaimer.appendChild(slider)
+				disclaimer.appendChild(inputContainer)
+				inputContainer.appendChild(sizeChangeDiv)
+				disclaimer.appendChild(disclaimerButton)
+				sizeChangeText.textContent = 'choose ball size'
+				disclaimer.classList.remove('slide-out-top')
+				disclaimer.classList.add('slide-in-top')
+
+				slider.addEventListener('input', checkValue) 
+				function checkValue () {
+					console.log(`${slider.value}`)
+					size = slider.value
+					parseFloat(size)
+					sizeChangeDiv.style.height = `${size}px`
+					sizeChangeDiv.style.width = `${size}px`
+				}
+			}
+		}
+
+		createHealthBar()
 	}
 	createGame()
 
@@ -281,7 +407,7 @@ function earnPage() {
 			section.remove()
 			gameMainContainer.style.visibility = 'visible'
 			gameMainContainer.classList.add('slide-in-top')
-			startGame('1')
+			startGame()
 		} else if (condition == 'hide') {
 			setTimeout(() => {
 				section.classList.add('fade-in')
@@ -294,17 +420,7 @@ function earnPage() {
 	}
 
 	function startGame() {
-		if (eventListener == 0) {
-			gameContainerWhereCircles.addEventListener('click', event=> {
-				const targetElement = event.target
-				if (targetElement.classList.contains('gameCircle')) {
-				} else {
-					console.log('missed')
-					missedCircles --
-					showScore()
-				}
-			})
-		}	
+		showScore()
 
 		function gameStartCountFunction() {
 			timeout1 = setTimeout(() => {
@@ -343,177 +459,140 @@ function earnPage() {
 		}
 
 		if (eventListener == 0) {
-			startGameButton.addEventListener('click', event=> {
-				console.log(gamePosition)
-				console.log(gameStart)
-				if (gamePosition == 'start' && gameStart == true) {
-					gameStartCountFunction()
-					startGameButton.textContent = 'stop game'
-					missedCircles = 0
-					gamePosition = 'stop'
-					
-					if (speed == '1') {
-						intervalSpeed = 1000
-					} else if (speed == '2') {
-						intervalSpeed = 800
-					} else if (speed == '3') {
-						intervalSpeed = 500
-					} else if (speed == '4') {
-						intervalSpeed = 400
-					} else if (speed == '5') {
-						intervalSpeed = 250
+			startGameButton.addEventListener('click', event => {
+				if (event) {
+					if (gamePosition == 'start' && gameStart == true) {
+							if (eventListener == 0) {
+								setTimeout(() => {
+									gameContainerWhereCircles.addEventListener('click', boardListener)
+								}, 3600);
+							}	
+							gameStartCountFunction()
+							startGameButton.textContent = 'stop game'
+							missedCircles = 0
+							if (speed == '1') {
+								intervalSpeed = 1000
+							} else if (speed == '2') {
+								intervalSpeed = 800
+							} else if (speed == '3') {
+								intervalSpeed = 500
+							} else if (speed == '4') {
+								intervalSpeed = 400
+							} else if (speed == '5') {
+								intervalSpeed = 250
+							}
+							startGameTimeout = setTimeout(() => {
+								intervalFunction()
+							}, 3600 - intervalSpeed)
+							gamePosition = 'stop'
+							setTimeout(() => {
+								buttonCalled = true
+							}, 500);
+					} else if (buttonCalled == true && gamePosition == 'stop' && gameStart == true) {
+						gameContainerWhereCircles.removeEventListener('click', boardListener)
+						setTimeout(() => {
+							gameContainerWhereCircles.removeEventListener('click', boardListener)
+						}, 3601)
+						gameOver()
 					}
-
-					startGameTimeout = setTimeout(() => {
-						intervalFunction()
-					}, 3600 - intervalSpeed);
-				} else if (gamePosition == 'stop' && gameStart == true) {
-					gameOver()
 				}
 			})
 		}
 
-		eventListener = 1
-
 		function createCircles() {
-
+			arg = false
 			const gameCircle = document.createElement('div')
 			gameCircle.classList.add('gameCircle')
 
-			let positionY = Math.floor(Math.random() * (560 - 60) + 60) + 'px'
-			let positionX = Math.floor(Math.random() * (960 - 60) + 60) + 'px'
+			let positionY = Math.floor(Math.random() * (560 - size) + size) + 'px'
+			let positionX = Math.floor(Math.random() * (960 - size) + size) + 'px'
 
 			gameCircle.style.top = `${positionY}`
 			gameCircle.style.right = `${positionX}`
+			gameCircle.style.width = `${size}px`
+			gameCircle.style.height = `${size}px`
+
+			function circleListener(event) {
+					function removeTimeout() {
+						clearTimeout(timeout)
+					}
+					const ballSoundPlay = new Audio(ballSound)
+					ballSoundPlay.volume = 0.3
+					ballSoundPlay.play()
+					removeTimeout()
+					score ++
+					showScore()
+					gameCircle.remove()
+			}
 
 			function appendCircle() {
 				gameContainerWhereCircles.appendChild(gameCircle)
 			}
 
 			if (speed == '1') {
-				gameCircle.addEventListener('click', event=> {
-					const ballSoundPlay = new Audio(ballSound)
-					ballSoundPlay.play()
-					removeTimeout()
-					score ++
-					showScore()
-					gameCircle.classList.add('puff-out-center')
-					showTimeout = setTimeout(() => {
-						gameCircle.style.zIndex = '0'
-						gameCircle.remove()
-						gameCircle.classList.remove('puff-out-center')
-					}, 1000)
-				})
+				gameCircle.addEventListener('click', circleListener)
 
 				timeout = setTimeout(() => {
-					missedCircles --
-					showScore()
+					if (missedCircles >= -19) {
+						missedCircles --
+					} 
+					if (!arg) {
+						showScore()
+					}
 					gameCircle.remove()
 				}, 9999)
-
-				function removeTimeout() {
-					clearTimeout(timeout)
-				}
 				appendCircle()
 			} else if (speed == 2) {
-				gameCircle.addEventListener('click', event=> {
-					const ballSoundPlay = new Audio(ballSound)
-					ballSoundPlay.play()
-					removeTimeout()
-					score ++
-					showScore()
-					gameCircle.classList.add('puff-out-center')
-					showTimeout = setTimeout(() => {
-						gameCircle.remove()
-						gameCircle.classList.remove('puff-out-center')
-					}, 800)
-				})
+				gameCircle.addEventListener('click', circleListener)
 
 				timeout = setTimeout(() => {
-					missedCircles --
-					showScore()
+					if (missedCircles >= -19) {
+						missedCircles --
+					} 
+					if (!arg) {
+						showScore()
+					}
 					gameCircle.remove()
 				}, 8000)
-
-				function removeTimeout() {
-					clearTimeout(timeout)
-				}
 				appendCircle()
 			} else if (speed == 3) {
-				gameCircle.addEventListener('click', event=> {
-					const ballSoundPlay = new Audio(ballSound)
-					ballSoundPlay.play()
-					removeTimeout()
-					score ++
-					showScore()
-					gameCircle.classList.add('puff-out-center')
-					showTimeout = setTimeout(() => {
-						gameCircle.remove()
-						gameCircle.classList.remove('puff-out-center')
-					}, 500)
-				})
+				gameCircle.addEventListener('click', circleListener)
 
 				timeout = setTimeout(() => {
-					missedCircles --
-					showScore()
+					if (missedCircles >= -19) {
+						missedCircles --
+					} 
+					if (!arg) {
+						showScore()
+					}
 					gameCircle.remove()
 				}, 5000)
-
-				function removeTimeout() {
-					clearTimeout(timeout)
-				}
 				appendCircle()
 			} else if (speed == 4) {
-				gameCircle.addEventListener('click', event=> {
-					const ballSoundPlay = new Audio(ballSound)
-					ballSoundPlay.play()
-					removeTimeout()
-					score ++
-					showScore()
-					gameCircle.classList.add('puff-out-center')
-					showTimeout = setTimeout(() => {
-						gameCircle.remove()
-						gameCircle.classList.remove('puff-out-center')
-					}, 400)
-				})
+				gameCircle.addEventListener('click', circleListener)
 
 				timeout = setTimeout(() => {
-					missedCircles --
+					if (missedCircles >= -19) {
+						missedCircles --
+					} 
 					if (!arg) {
 						showScore()
 					}
 					gameCircle.remove()
 				}, 4000)
-
-				function removeTimeout() {
-					clearTimeout(timeout)
-				}
 				appendCircle()
 			} else if (speed == 5) {
-				gameCircle.addEventListener('click', event=> {
-					const ballSoundPlay = new Audio(ballSound)
-					ballSoundPlay.play()
-					removeTimeout()
-					score ++
-					showScore()
-					gameCircle.classList.add('puff-out-center')
-					showTimeout = setTimeout(() => {
-						gameCircle.remove()
-						gameCircle.classList.remove('puff-out-center')
-					}, 300)
-				})
+				gameCircle.addEventListener('click', circleListener)
 
 				timeout = setTimeout(() => {
-					missedCircles --
+					if (missedCircles >= -19) {
+						missedCircles --
+					} 
 					if (!arg) {
 						showScore()
 					}
 					gameCircle.remove()
 				}, 3000)
-
-				function removeTimeout() {
-					clearTimeout(timeout)
-				}
 				appendCircle()
 			}
 		}
@@ -528,14 +607,9 @@ function earnPage() {
 			}, intervalSpeed)
 		}
 
-		function showScore() {
-			gameTimeText.textContent = `${missedCircles + 20}`
-			gameScoreText.textContent = `${score}`
-		}
-
 		function gameOver() {
+			buttonCalled = false
 			arg = true
-			console.log(arg)
 			clearTimeout(showTimeout)
 			clearTimeout(startGameTimeout)
 			clearTimeout(timeout1)
@@ -572,17 +646,18 @@ function earnPage() {
 			containerForTextGold.appendChild(goldImageForGame)
 
 			if (speed == 1) {
-				goldEarnd = score * 2
+				goldEarnd = score / size * 10 * 20
 			} else if (speed == 2) {
-				goldEarnd = score * 3
+				goldEarnd = score / size * 10 * 30
 			} else if (speed == 3) {
-				goldEarnd = score * 3.5
+				goldEarnd = score / size * 10 * 40
 			} else if (speed == 4) {
-				goldEarnd = score * 4
+				goldEarnd = score / size * 10 * 50
 			} else if (speed == 5) {
-				goldEarnd = score * 4.5
+				goldEarnd = score / size * 10 * 60
 			}
 
+			goldEarnd = parseInt(goldEarnd)
 			userGold.gold += goldEarnd
 			goldCountText.textContent = `${userGold.gold}`
 
@@ -590,7 +665,7 @@ function earnPage() {
 				skillGroup = 'f'
 				scoreColor.style.color = 'red'
 				disclaimerText3.textContent = 'to slow...'
-			} else if (speed == 1 && score < 200 || speed == 2 && score < 150 || speed == 3 && score < 50 || speed == 4 && score < 35 || speed == 5 && score < 15) {
+			} else if (speed == 1 && score < 500 || speed == 2 && score < 250 || speed == 3 && score < 150 || speed == 4 && score < 60 || speed == 5 && score < 25) {
 				skillGroup = 'b'
 				scoreColor.style.color = 'orange'
 				disclaimerText3.textContent = 'not that bad.'
@@ -608,12 +683,13 @@ function earnPage() {
 			disclaimer.classList.add('slide-in-top')
 
 			disclaimerButton.addEventListener('click', event=> {
-				setTimeout(() => {
+					missedCircles = 0
+					showScore()
+					setTimeout(() => {
 					disclaimer.classList.remove('slide-in-top')
 					disclaimer.classList.add('slide-out-top')
 				
 					while (disclaimerTextContainer.firstChild) {
-						console.log('cleared')
 						disclaimerTextContainer.removeChild(disclaimerTextContainer.firstChild)
 					}
 					disclaimerText1.textContent = 'there is a game to earn some gold.'
@@ -628,11 +704,15 @@ function earnPage() {
 			startGameButton.textContent = 'start game'
 				gamePosition = 'start'
 				score = 0
-				missedCircles = 0
 				skillGroup = ''
 				goldEarnd = 0
+				missedCircles = 0
+				score2 = 0
+				gameContainerWhereCircles.removeEventListener('click', boardListener)
+				setTimeout(() => {
+					gameContainerWhereCircles.removeEventListener('click', boardListener)
+				}, 3601);
 		}
-		showScore()
 	}
 
 	function giveReverseAnimation() {

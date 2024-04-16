@@ -9,7 +9,7 @@ import earnPage from "./game"
 import { itemsArray } from "./menu"
 
 let userGold = {
-	gold: 1200
+	gold: 2500
 }
 
 function mainPage (animationCondition, buyCondition, target, priceCount, index) {
