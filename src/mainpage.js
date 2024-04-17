@@ -5,12 +5,11 @@ import plus from './images/plus.svg'
 import goldImg from './images/goldImg.jpg'
 import menuPage from "./menu"
 import earnPage from "./game"
-
+import showInventory from "./inventory"
+import { boughtItems } from "./menu"
 import { itemsArray } from "./menu"
-
-let userGold = {
-	gold: 2500
-}
+import { updateGold } from "."
+import { userGold } from "."
 
 function mainPage (animationCondition, buyCondition, target, priceCount, index) {
 	let currentPage = 'title'
@@ -20,6 +19,7 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 	const backgroundImage = document.createElement('img')
 	const secretShop = document.createElement('img')
 	const coverDiv = document.createElement('div')
+	const titleContainer = document.createElement('div')
 
 	const goldCountContainer = document.createElement('div')
 	const goldCountImage = document.createElement('img')
@@ -27,8 +27,46 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 	const cartButton = document.createElement('img')
 	const goldCountText = document.createElement('p')
 	const goldCountTextAnimation = document.createElement('p')
-	const descriptionAddToCartButton = document.createElement('button')
 	const dialogContainer = document.createElement('div')
+
+	
+
+	const titleText = document.createElement('p')
+	titleText.textContent = 'how is it going, bra?'
+	titleText.classList.add('titleText')
+	titleText.classList.add('slide-in-top')
+	titleContainer.appendChild(titleText)
+	const downTextContainer = document.createElement('div')
+	downTextContainer.classList.add('downTextContainer')
+	const menuText = document.createElement('p')
+	const inventoryText = document.createElement('p')
+	menuText.textContent = 'up to buying stuff?'
+	menuText.classList.add('menuText')
+	menuText.classList.add('slide-in-right')
+
+	menuText.addEventListener('click', event => {
+		giveReverseAnimationMain()
+				setTimeout(() => {
+					clear()
+					menuPage()
+				}, 805)
+	})
+
+	titleText.classList.add('slide-in-right')
+	inventoryText.textContent = 'yors collection here man'
+	inventoryText.classList.add('inventoryText')
+	inventoryText.classList.add('slide-in-right')
+
+	inventoryText.addEventListener('click', event => {
+		giveReverseAnimationMain()
+				setTimeout(() => {
+					clear()
+					showInventory()
+				}, 805)
+	})
+	content.appendChild(downTextContainer)
+	downTextContainer.appendChild(menuText)
+	downTextContainer.appendChild(inventoryText)
 
 	if (animationCondition == 'true') {
 		backgroundAnimation()
@@ -85,23 +123,26 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 
 		dialogNoButton.addEventListener('click', event=> {
 			dialogContainer.classList.remove('slide-in-top')
-					dialogContainer.classList.add('slide-out-top')
-					giveReverseAnimationMain()
-				setTimeout(clear, 800)
-				setTimeout(menuPage, 801)
+				dialogContainer.classList.add('slide-out-top')
+				giveReverseAnimationMain()
+				setTimeout(() => {
+					clear()
+					menuPage()
+				}, 805)
 		})
 
 		dialogYesButton.addEventListener('click', event=> {
 			itemsArray[index][7] = 'true'
-			userGold = userGold - Number(price)
-			content.removeChild(goldCountContainer)
+			userGold.gold = userGold.gold - Number(price)
+			updateGold()
+			titleContainer.removeChild(goldCountContainer)
 			domWork()
 			goldCountContainer.classList.remove('slide-in-right')
 			goldCountText.classList.add('fade-in')
 			goldCountTextAnimation.classList.remove('slide-in-right')
 			goldCountTextAnimation.textContent = `-${price}`
 			goldCountTextAnimation.classList.add('slide-out-top-slow')
-			content.appendChild(goldCountContainer)
+			titleContainer.appendChild(goldCountContainer)
 
 			dialogContainer.removeChild(dialogAlertContainer)
 			dialogContainer.removeChild(dialogPriceContainer)
@@ -157,10 +198,11 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 		backgroundImage.setAttribute('src', dota)
 
 		secretShop.classList.add('secretShopMainPage')
+		secretShop.classList.add('slide-in-bottom')
 		secretShop.setAttribute('src', secret)
 
 		coverDiv.classList.add('coverDiv')
-
+		titleContainer.classList.add('titleContainer')
 
 		goldCountContainer.classList.add('goldCountContainer')
 		goldCountImage.classList.add('goldCountImage')
@@ -172,7 +214,7 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 			setTimeout(() => {
 				clear()
 				earnPage()
-			}, 1001);
+			}, 805)
 		})
 		cartButton.classList.add('cartButton')
 		goldCountText.classList.add('goldCountText')
@@ -181,14 +223,6 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 		goldCountTextAnimation.classList.add('goldCountTextAnimation')
 		goldCountTextAnimation.textContent = `${userGold.gold}`
 		goldCountTextAnimation.classList.add('slide-in-right')
-
-		secretShop.addEventListener('click', event => {
-			if (currentPage !== 'title') {
-				giveReverseAnimationMain()
-				setTimeout(clear, 800)
-				setTimeout(mainPage, 801)
-			}
-		})
 	}
 
 	domWork()
@@ -203,14 +237,10 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 	}
 
 	function giveReverseAnimationMain() {
-		const title = document.getElementById('title')
-		const menu = document.getElementById('menu')
-		const contact = document.getElementById('contact')
 
-		contact.style.animation = 'animateContactBack 1s forwards'
-		title.style.animation = 'animateTitleBack 1s forwards'
-		menu.style.animation = 'animateMenuBack 1s forwards'
-		secretShop.style.animation = 'animateSecretShopMainPageBack 1s forwards'
+		secretShop.classList.remove('slide-in-bottom')
+		secretShop.classList.add('slide-out-bottom')
+		
 		dialogContainer.classList.remove('slide-in-top')
 		dialogContainer.classList.add('slide-out-top')
 		goldCountTextAnimation.classList.remove('slide-out-top-slow')
@@ -219,29 +249,14 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 
 		goldCountContainer.classList.remove('slide-in-right')
 		goldCountContainer.classList.add('slide-out-right')
-	}
-
-	const createText = (name, text, buttonText) => {
-		const item = document.createElement('h1')
-		const button = document.createElement('button')
-		item.classList.add('text')
-		item.id = name
-		item.textContent = `${text}`
-		button.textContent = `${buttonText}`
-		button.classList.add(`${name}`)
-		button.classList.add('button')
-		button.addEventListener('click', event => {
-			const clickedBtn = event.target.className;
-			if (clickedBtn == 'menu button') {
-				giveReverseAnimationMain()
-				setTimeout(clear, 800)
-				setTimeout(menuPage, 801) 
-			}	
-		})
-	
-		content.appendChild(item)
-		item.appendChild(button)
-		return item
+		titleText.classList.remove('slide-in-top')
+		titleText.classList.add('slide-out-top')
+		titleText.classList.remove('slide-in-right')
+		titleText.classList.add('slide-out-right')
+		inventoryText.classList.remove('slide-in-right')
+		inventoryText.classList.add('slide-out-right')
+		menuText.classList.remove('slide-in-right')
+		menuText.classList.add('slide-out-right')
 	}
 
 	const append = () => {
@@ -249,7 +264,8 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 		content.appendChild(secretShop)
 		content.appendChild(coverDiv)
 
-		content.appendChild(goldCountContainer)
+		content.appendChild(titleContainer)
+		titleContainer.appendChild(goldCountContainer)
 		goldCountContainer.appendChild(goldCountImage)
 		goldCountContainer.appendChild(goldCountText)
 		goldCountContainer.appendChild(goldPlusButton)
@@ -257,15 +273,8 @@ function mainPage (animationCondition, buyCondition, target, priceCount, index) 
 		content.appendChild(goldCountTextAnimation)
 	}
 
-	createText('title', '', 'how is it going, bra?')
-	createText('menu', '', 'up to buying stuff?')
-	createText('contact', '', 'yors collection here man')
 	createSpans()
 	append()
-
-	setTimeout(() => {
-    secretShop.classList.add('vibrate-1')
-  }, 1001);
 
 	const clear = () => {
 		while (content.firstChild) {

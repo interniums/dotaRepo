@@ -2,25 +2,23 @@ import dota from './images/dota.jpg'
 import secret from './images/secretShopRemoved.png'
 import goldImg from './images/goldImg.jpg'
 import plus from './images/plus.svg'
-import { userGold } from "./mainpage"
+import { userGold } from "."
 import mainPage from "./mainpage"
 import ballSound from './sounds/ballsound.mp3'
 import missSound from './sounds/missSound.mp3'
+import { updateGold } from "."
 
 function earnPage() {
 	const content = document.getElementById('content')
 	const backgroundImage = document.createElement('img')
 	const secretShop = document.createElement('img')
-	const goldCountContainer = document.createElement('div')
 	const goldCountImage = document.createElement('img')
 	const goldPlusButton = document.createElement('img')
 	const sizeChangeText = document.createElement('p')
-	const cartButton = document.createElement('img')
 	const goldCountText = document.createElement('p')
 	const dialogArea = document.createElement('div')
 	const gameContainerWhereCircles = document.createElement('div')
 	const gameContainer = document.createElement('div')
-	const gamePlayArea = document.createElement('div')
 	const playButton = document.createElement('button')
 	const section = document.createElement('section')
 	const gameMainContainer = document.createElement('div')
@@ -35,6 +33,8 @@ function earnPage() {
 	const gameTimeText = document.createElement('div')
 	const startGameButton = document.createElement('button')
 	const inputContainer = document.createElement('div')
+	const titleContainer = document.createElement('div')
+	const goldCountContainer = document.createElement('div')
 	const gameButton1 = document.createElement('button')
 		const gameButton2 = document.createElement('button')
 		const gameButton3 = document.createElement('button')
@@ -107,6 +107,8 @@ function earnPage() {
 	}
 
 	function doomWork() {
+		titleContainer.style.justifyContent = 'end'
+		titleContainer.classList.add('titleContainer')
 		playButton.classList.add('fade-in')
 		playButton.classList.add('playButton')
 		playButton.textContent = 'play'
@@ -139,12 +141,13 @@ function earnPage() {
 		disclaimerButton.classList.add('disclaimerButton')
 		disclaimerButton.textContent = 'ok'
 		disclaimerText1.textContent = 'there is a game to earn some gold.'
-		disclaimerText2.textContent = 'you should click on appearing eyes as fast as possible.'
-		disclaimerText3.textContent = 'faster u are - more gold u earn.'
+		disclaimerText2.textContent = 'you should click on appearing balls as fast as possible.'
+		disclaimerText3.textContent = 'faster u are - more gold u earn. Choose size and speed bellow'
 
 		playButton.addEventListener('click', event=> {
 			if (event) {
 				if (position == 0) {
+					titleContainer.remove()
 					disclaimer.classList.remove('fade-out')
 					disclaimer.classList.add('slide-in-top')
 					disclaimer.style.visibility = 'visible'
@@ -161,6 +164,7 @@ function earnPage() {
 					playButton.style.right = '-4%'
 					showGame('show')
 				} else if (position == 1) {
+					content.appendChild(titleContainer)
 					const item = document.querySelectorAll(`.healtBarItem`)
 					item.forEach(element => element.style.backgroundColor = 'rgb(21, 82, 21)')
 					buttonCalled = false
@@ -229,7 +233,6 @@ function earnPage() {
 		goldCountImage.src = goldImg
 		goldPlusButton.classList.add('goldPlusButton')
 		goldPlusButton.setAttribute('src', plus)
-		cartButton.classList.add('cartButton')
 		goldCountText.classList.add('goldCountText')
 		goldCountText.textContent = `${userGold.gold}`
 		goldCountContainer.classList.add('slide-in-right')
@@ -658,7 +661,8 @@ function earnPage() {
 			}
 
 			goldEarnd = parseInt(goldEarnd)
-			userGold.gold += goldEarnd
+			userGold.gold = goldEarnd + userGold.gold
+			updateGold()
 			goldCountText.textContent = `${userGold.gold}`
 
 			if (speed == 1 && score < 80 || speed == 2 && score < 70 || speed == 3 && score < 40 || speed == 4 && score < 20 || speed == 5 && score < 10) {
@@ -749,11 +753,11 @@ function earnPage() {
 		content.appendChild(playButton)
 		content.appendChild(backgroundImage)
 		content.appendChild(secretShop)
-		content.appendChild(goldCountContainer)
+		content.appendChild(titleContainer)
+		titleContainer.appendChild(goldCountContainer)
 		goldCountContainer.appendChild(goldCountImage)
 		goldCountContainer.appendChild(goldCountText)
 		goldCountContainer.appendChild(goldPlusButton)
-		goldCountContainer.appendChild(cartButton)
 
 		setTimeout(() => {
 			dialogArea.classList.add('slide-in-bottom')

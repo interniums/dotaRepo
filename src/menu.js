@@ -23,9 +23,9 @@ import descriptions from "./itemsDescription"
 import plus from './images/plus.svg'
 import mainPage from "./mainpage"
 import boughtSymbolImg from './images/boughtSymbol.svg'
-import { userGold } from "./mainpage"
-import ballSound from './sounds/ballsound.mp3'
+import { userGold } from "."
 import earnPage from "./game"
+import { updateGold } from "."
 
 
 const audioContainer = {
@@ -36,8 +36,7 @@ const audioContainer = {
 	midas: new Audio(midasSound),
 	refresher: new Audio(refresherSound),
 	soulring: new Audio(soulRingSound),
-	travelboots: new Audio(travelbootsSound),
-	//ballsound: new Audio(ballSound)
+	travelboots: new Audio(travelbootsSound)
 }
 
 let itemsArray = [
@@ -65,20 +64,20 @@ function menuPage() {
 	const secretShop = document.createElement('img')
 	const coverDiv = document.createElement('div')
 	const item = document.createElement('h1')
-	const button = document.createElement('button')
 	const shopContainer = document.createElement('div')
 	const leftHandContainer = document.createElement('div')
 	const rightHandContainer = document.createElement('div')
 	const handLeft = document.createElement('img')
 	const handRight = document.createElement('img')
 	const descriptionMain = document.createElement('div')
+	const titleContainer = document.createElement('div')
+	titleContainer.classList.add('titleContainer')
 
 	const goldCountContainer = document.createElement('div')
 	const goldCountImage = document.createElement('img')
 	const goldPlusButton = document.createElement('img')
 	const cartButton = document.createElement('img')
 	const goldCountText = document.createElement('p')
-	const descriptionAddToCartButton = document.createElement('button')
 
 	const noMoneyContainer = document.createElement('div')
 	const noMoneyTextContainer = document.createElement('div')
@@ -328,7 +327,7 @@ function menuPage() {
 			itemSound.play()
 		})
 		descriptionAddToCartButton.addEventListener('click', event => {
-			if (userGold >= Number(itemPriceText)) {
+			if (userGold.gold >= Number(itemPriceText)) {
 			if (event && currentPage !== 'title') {
 				giveReverseAnimation()
 				setTimeout(clear, 1001)
@@ -362,7 +361,7 @@ function menuPage() {
 
 	function noMoney(value) {
 		noMoneyText.textContent = 'not enought gold!'
-		noMoneyValue.textContent = `you need ${value - userGold} more`
+		noMoneyValue.textContent = `you need ${value - userGold.gold} more`
 		noMoneyImg.setAttribute('src', goldImg)
 		noMoneyEarnButton.textContent = 'earn'
 		noMoneyExitButton.textContent = 'exit'
@@ -448,7 +447,6 @@ function menuPage() {
 
 	function giveReverseAnimation() {
 		secretShop.style.animation = 'animateSecretBack 1s forwards'
-		item.style.animation = 'animateTitleBack 1s forwards'
 		shopContainer.classList.remove('slide-in-bottom')
 		shopContainer.classList.add('slide-out-bottom')
 		leftHandContainer.style.animation = ''
@@ -461,6 +459,8 @@ function menuPage() {
 		goldCountContainer.classList.add('slide-out-right')
 		noMoneyContainer.classList.remove('slide-in-top')
 		noMoneyContainer.classList.add('slide-out-top')
+		item.classList.remove('slide-in-top')
+		item.classList.add('slide-out-top')
 	}
 
 	const domWork = () => {
@@ -502,7 +502,7 @@ function menuPage() {
 			setTimeout(() => {
 				clear()
 				earnPage()
-			}, 1001);
+			}, 1001)
 		})
 		cartButton.classList.add('cartButton')
 		goldCountText.classList.add('goldCountText')
@@ -527,18 +527,15 @@ function menuPage() {
 				giveReverseAnimation()
 				setTimeout(clear, 1001)
 				setTimeout(function() {
-					mainPage('false');
-			}, 1002);
+					mainPage('false')
+			}, 1002)
 			}
 		})
 
 		coverDiv.classList.add('coverDiv')
-		item.id = 'title'
-		item.textContent = ''
-		button.textContent = 'Wellcome to the dota shop!'
-		button.classList.add('title')
-		button.classList.add('button')
-		button.id = 'unactive'
+		item.classList.add('titleMenu')
+		item.classList.add('slide-in-top')
+		item.textContent = 'wellcome to the dota shop'
 	}
 
 	domWork()
@@ -556,11 +553,11 @@ function menuPage() {
 		content.appendChild(backgroundImage)
 		content.appendChild(secretShop)
 		showShop('none')
-		content.appendChild(item)
+		titleContainer.appendChild(item)
 		content.appendChild(descriptionMain)
-		title.appendChild(button)
 		content.appendChild(shopContainer)
-		content.appendChild(goldCountContainer)
+		content.appendChild(titleContainer)
+		titleContainer.appendChild(goldCountContainer)
 		goldCountContainer.appendChild(goldCountImage)
 		goldCountContainer.appendChild(goldCountText)
 		goldCountContainer.appendChild(goldPlusButton)
